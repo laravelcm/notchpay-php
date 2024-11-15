@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotchPay;
 
-class Customer extends ApiResource
+use NotchPay\Exceptions\InvalidArgumentException;
+
+final class Customer extends ApiResource
 {
     const OBJECT_NAME = 'customers';
 
@@ -14,6 +18,7 @@ class Customer extends ApiResource
     /**
      * @param string $customerId containing the id of the customer to block
      *
+     * @throws InvalidArgumentException
      * @link https://developer.notchpay.co/#customer-whitelist-blacklist
      */
     public static function block(string $customerId): array|object
@@ -26,6 +31,7 @@ class Customer extends ApiResource
     /**
      * @param string $customerId containing the id of the customer to unblock
      *
+     * @throws InvalidArgumentException
      * @link https://developer.notchpay.co/#customer-whitelist-blacklist
      */
     public static function unblock(string $customerId): array|object
@@ -38,6 +44,7 @@ class Customer extends ApiResource
     /**
      * @param string $customerId containing the id of the customer to delete
      *
+     * @throws InvalidArgumentException
      * @link https://developer.notchpay.co/#customer-whitelist-blacklist
      */
     public static function delete(string $customerId): array|object

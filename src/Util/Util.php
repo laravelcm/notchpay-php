@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotchPay\Util;
 
 use stdClass;
@@ -32,7 +34,6 @@ abstract class Util
      */
     public static function convertArrayToObject(array $resp): array|object
     {
-
         $object = new stdClass();
 
         return self::arrayToObject($resp, $object);

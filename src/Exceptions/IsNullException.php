@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotchPay\Exceptions;
 
-class IsNullException extends \Exception
+final class IsNullException extends \Exception
 {
 }

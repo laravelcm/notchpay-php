@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotchPay;
 
 use NotchPay\Exceptions\InvalidArgumentException;
@@ -10,12 +12,10 @@ class ApiResource
 
     use ApiOperations\Request;
 
-
     public static function baseUrl(): string
     {
         return NotchPay::$apiBase;
     }
-
 
     public static function classUrl(): string
     {
@@ -23,7 +23,6 @@ class ApiResource
 
         return "{$base}";
     }
-
 
     /**
      * @throws InvalidArgumentException
@@ -35,9 +34,10 @@ class ApiResource
 
             throw new InvalidArgumentException($message);
         }
+
         $id = Util\Util::utf8($id);
-        $base = static::classUrl();
         $extn = urlencode($id);
+        $base = static::classUrl();
 
         return "{$base}/{$extn}";
     }
@@ -50,10 +50,10 @@ class ApiResource
         return "{$base}/{$slug}";
     }
 
-
     public static function buildQueryString(string $slug, array $params = null): string
     {
         $url = self::endPointUrl($slug);
+
         if (! empty($params)) {
             $url .= '?'.http_build_query($params);
         }

@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotchPay;
 
-class Country extends ApiResource
+final class Country extends ApiResource
 {
     const OBJECT_NAME = 'countries';
 

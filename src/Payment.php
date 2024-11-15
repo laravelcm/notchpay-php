@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotchPay;
 
 use NotchPay\Exceptions\InvalidArgumentException;
@@ -12,13 +14,13 @@ class Payment extends ApiResource
     use ApiOperations\Fetch;
 
     /**
-     *
      * @link https://developer.notchpay.co/#transaction-initialize
      * @throws InvalidArgumentException
      */
     public static function initialize(array $params): array|object
     {
         self::validateParams($params, true);
+
         $url = static::endPointUrl('initialize');
 
         return static::staticRequest('POST', $url, $params);
@@ -46,6 +48,7 @@ class Payment extends ApiResource
     public static function complete(string $reference, array $params): array|object
     {
         self::validateParams($params, true);
+
         $url = static::endPointUrl($reference);
 
         return static::staticRequest('PUT', $url, $params);

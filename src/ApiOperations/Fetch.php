@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotchPay\ApiOperations;
 
 trait Fetch
 {
-
     public static function fetch(string $id): array|object
     {
         $url = static::resourceUrl($id);

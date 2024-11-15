@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotchPay\ApiOperations;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use NotchPay\Exceptions\ApiException;
 use NotchPay\Exceptions\InvalidArgumentException;
-use NotchPay\Exceptions\NotchPayException;
 use NotchPay\NotchPay;
-use GuzzleHttp\Client;
 use NotchPay\Util\Util;
 
 /**
@@ -16,12 +17,9 @@ use NotchPay\Util\Util;
  */
 trait Request
 {
-
     protected static $client;
 
-
     protected static mixed $response;
-
 
     public static function validateParams(mixed $params = null, bool $required = false): void
     {
@@ -41,14 +39,11 @@ trait Request
 
     public static function staticRequest(string $method, string $url, array $params = [], string $return_type = 'obj'): array|object
     {
-
-
         if ($return_type != 'arr' && $return_type != 'obj') {
             throw new InvalidArgumentException('Return type can only be obj or arr');
         }
 
         static::setHttpResponse($method, $url, $params);
-
 
         if ($return_type == 'arr') {
             return static::getResponseData();
@@ -76,7 +71,6 @@ trait Request
         );
     }
 
-
     private static function setHttpResponse(string $method, string $url, array $body = []): \GuzzleHttp\Psr7\Response
     {
         static::setRequestOptions();
@@ -86,10 +80,11 @@ trait Request
                 NotchPay::$apiBase . '/' . $url,
                 ['body' => json_encode($body)]
             );
-        } catch (ClientException | ServerExceptionn | ConnectException $e ) {
+        } catch (ClientException | ConnectException $e) {
             if($e instanceof ConnectException) {
                 throw new ApiException("Notch Pay Server unreachable");
             }
+
             throw new ApiException(self::getResponseErrorMessage($e), self::getResponseErrors($e));
         }
 
@@ -106,13 +101,10 @@ trait Request
         return json_decode($e->getResponse()->getBody()->getContents(), true);
     }
 
-
     private static function getResponse(): array
     {
-
         return json_decode(static::$response->getBody(), true);
     }
-
 
     private static function getResponseData(): array
     {

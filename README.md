@@ -26,7 +26,7 @@ _Don't disable SSL peer verification!_
 ### 1. Prepare your parameters
 
 `email`, `amount` and `currency` are the most common compulsory parameters. Do send a unique email per customer.
-The amount accept numeric value value.
+The amount accept numeric value.
 The currency accept currency ISO 3166.
 For instance, to accept `For US Dollar`, please send `USD` as the currency.
 
@@ -42,25 +42,25 @@ use NotchPay\Payment;
 NotchPay::setApiKey('sk_1234abcd');
 
 try {
-    $tranx = Payment::initialize([
-        'amount'=>$amount,       // according to currency format
-        'email'=>$email,         // unique to customers
-        'currency'=>$currency,         // currency iso code
-        'callback'=>$callback,         // optional callback url
-        'reference'=>$reference, // unique to transactions
+    $response = Payment::initialize([
+        'amount' => $amount,        // according to currency format
+        'email' => $email,         // unique to customers
+        'currency' => $currency,   // currency iso code
+        'callback' => $callback,   // optional callback url
+        'reference' => $reference, // unique to transactions
     ]);
 } catch(\NotchPay\Exceptions\ApiException $e){
     print_r($e->errors);
     die($e->getMessage());
 }
-// redirect to page so User can pay
-header('Location: ' . $tranx->authorization_url);
 
+// redirect to page so User can pay
+header('Location: ' . $response->authorization_url);
 ```
 
 When the user enters their payment details, NotchPay will validate and charge the card. It will do all the below:
 
-Send a payment.complete event to your Webhook URL set at: https://business.notchpay.co/settings/developer
+Send a payment complete event to your Webhook URL set at: https://business.notchpay.co/settings/developer
 
 If receipts are not turned off, an HTML receipt will be sent to the customer's email.
 
@@ -79,9 +79,9 @@ After we redirect to your callback, please verify the transaction before giving 
     NotchPay::setApiKey('sk_1234abcd');
 
     try {
-    $tranx = Payment::verify($reference);
+    $response = Payment::verify($reference);
 
-    if ($tranx->transaction->status === 'complete') {
+    if ($response->transaction->status === 'complete') {
       // transaction was successful...
       // please check other things like whether you already gave value for this ref
       // if the email matches the customer who owns the product etc
@@ -105,7 +105,6 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 ## Security
 
 If you discover any security related issues, please email hello@notchpay.co instead of using the issue tracker.
-
 
 ## License
 

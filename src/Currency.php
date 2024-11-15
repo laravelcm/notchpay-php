@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotchPay;
 
-class Currency extends ApiResource
+final class Currency extends ApiResource
 {
     const OBJECT_NAME = 'currencies';
 

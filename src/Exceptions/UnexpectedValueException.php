@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NotchPay\Exceptions;
 
-class UnexpectedValueException extends \UnexpectedValueException
+final class UnexpectedValueException extends \UnexpectedValueException
 {
 }
