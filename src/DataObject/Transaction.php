@@ -11,14 +11,14 @@ final class Transaction
         public int $amount,
         public int $amountTotal,
         public int $convertedAmount,
-        public string $sandbox,
+        public bool $sandbox,
         public string $currency,
         public string $customer,
         public string $status,
-        public string $callback,
-        public string $geo,
+        public string $ipAddress,
         public \DateTime $createdAt,
         public \DateTime $updatedAt,
-        public int $fee = 0
+        public int $fee = 0,
+        public ?string $description = null,
     ) {}
 }

@@ -1,6 +1,7 @@
 /.phpunit.cache
 .phpunit.result.cache
 composer.lock
+phpstan.neon
 /vendor
 /.idea
 /.vscode

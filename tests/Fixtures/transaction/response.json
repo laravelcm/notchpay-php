@@ -1,0 +1,21 @@
+{
+  "status": "Accepted",
+  "message": "Payment initialized",
+  "code": 201,
+  "transaction": {
+    "amount": 1000,
+    "amount_total": 1000,
+    "sandbox": false,
+    "fee": 0,
+    "converted_amount": 1000,
+    "customer": "cus.40jRRfanz7tKgZrl",
+    "description": "My first payment",
+    "reference": "trx.1OFePHllHoeNSL1qfsWUV1l1",
+    "status": "pending",
+    "currency": "XAF",
+    "geo": "129.0.189.24",
+    "created_at": "2024-04-25T21:39:21.000000Z",
+    "updated_at": "2024-04-25T21:39:21.000000Z"
+  },
+  "authorization_url": "https://pay.notchpay.co/phUSV2AyUiFTeKU7O2TKxpAN04g9lyqc5zp2aSVz0ZNQYNhJroNOIhlNi8aRnKYQiANLhM51eRqZbuDX6xRAlfkFUYwZngf1pSe4MYYSnzFOzY1u3vf9hxUum69QNmPFwaNvTK9bluTPMZZAcR9KosCH52xeHAyiiz0WlovcRg7wOAkZWOVYSPXOrCRTmYUI"
+}
