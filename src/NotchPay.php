@@ -3,6 +3,8 @@
 namespace NotchPay;
 
 use NotchPay\Exceptions\InvalidArgumentException;
+use NotchPay\Transfer\RecipientOperations;
+use NotchPay\Transfer\TransferOperations;
 
 class NotchPay
 {
@@ -43,5 +45,15 @@ class NotchPay
             throw new InvalidArgumentException('Api key must have a valid signature.');
         }
         return true;
+    }
+
+    public static function recipients(): RecipientOperations
+    {
+        return new RecipientOperations();
+    }
+
+    public static function transfers(): TransferOperations
+    {
+        return new TransferOperations();
     }
 }

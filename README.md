@@ -94,6 +94,41 @@ After we redirect to your callback, please verify the transaction before giving 
 
 ```
 
+## Transfers
+
+```php
+use NotchPay\NotchPay;
+use NotchPay\Payment;
+
+NotchPay::setApiKey('sk_1234abcd');
+
+// Create a recipient
+$recipient = NotchPay::recipients()->create([
+      "channel" => "cm.mobile",
+      "number" => "+237656019261",
+      "phone" => "+237655632895",
+      "email" => "hello@notchpay.co",
+      "country" => "MX",
+      "name" => "Benjamin Maggio",
+      "description" => "Hic blanditiis voluptatem nobis ut saepe dolorem molestiae dolorum.",
+      "reference" => "3RAV4gZLesBAXTrwiuUDLnJGSAS4RVEbM5" // your unique reference
+]);
+
+// Initialize a transfer
+$transfer = NotchPay::transfers()->initialize([
+    'amount' => "10",
+    'currency' => 'XAF',
+    'description' => 'Salary payment',
+    'recipient' => $recipient->id
+]);
+
+// Verify a transfer
+$verified = NotchPay::transfers()->verify('transfer_reference');
+
+// List transfers
+$transfers = NotchPay::transfers()->list();
+```
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.

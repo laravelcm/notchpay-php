@@ -2,14 +2,16 @@
 
 namespace NotchPay;
 
+use NotchPay\ApiOperations\All;
+use NotchPay\ApiOperations\Create;
+use NotchPay\ApiOperations\Fetch;
 use NotchPay\Exceptions\InvalidArgumentException;
 
 class Payment extends ApiResource
 {
-    const OBJECT_NAME = 'payments';
+    use All, Create, Fetch;
 
-    use ApiOperations\All;
-    use ApiOperations\Fetch;
+    const OBJECT_NAME = 'payments';
 
     /**
      *
