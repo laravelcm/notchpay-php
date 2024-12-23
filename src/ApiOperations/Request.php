@@ -2,14 +2,15 @@
 
 namespace NotchPay\ApiOperations;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
-use NotchPay\Exceptions\ApiException;
-use NotchPay\Exceptions\InvalidArgumentException;
-use NotchPay\Exceptions\NotchPayException;
-use NotchPay\NotchPay;
 use GuzzleHttp\Client;
+use NotchPay\NotchPay;
 use NotchPay\Util\Util;
+use NotchPay\Exceptions\ApiException;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Exception\ConnectException;
+use NotchPay\Exceptions\NotchPayException;
+use NotchPay\Exceptions\InvalidArgumentException;
 
 /**
  * Trait for resources that need to make API requests.
@@ -62,18 +63,22 @@ trait Request
      */
     protected static function setRequestOptions(): void
     {
-        static::$client = new Client(
-            [
-                'base_uri' => NotchPay::$apiBase,
-                'verify' => false,
-                'headers' => [
-                    'Authorization' => NotchPay::$apiKey,
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'User-Agent' => 'NotchPay/PHP Client'
-                ],
-            ]
-        );
+        $headers = [
+            'Authorization' => NotchPay::$apiKey,
+            'Content-Type'  => 'application/json',
+            'Accept'        => 'application/json',
+            'User-Agent'    => 'NotchPay/PHP Client',
+        ];
+
+        if (NotchPay::$apiPrivateKey) {
+            $headers['X-Grant'] = NotchPay::$apiPrivateKey;
+        }
+
+        static::$client = new Client([
+            'base_uri' => NotchPay::$apiBase,
+            'verify'   => false,
+            'headers'  => $headers,
+        ]);
     }
 
 
@@ -86,7 +91,7 @@ trait Request
                 NotchPay::$apiBase . '/' . $url,
                 ['body' => json_encode($body)]
             );
-        } catch (ClientException | ServerExceptionn | ConnectException $e ) {
+        } catch (ClientException | ServerException | ConnectException $e ) {
             if($e instanceof ConnectException) {
                 throw new ApiException("Notch Pay Server unreachable");
             }
