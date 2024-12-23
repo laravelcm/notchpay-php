@@ -106,26 +106,26 @@ try {
     $beneficiary = Recipient::create([
             "name" => "Benjamin Maggio",
             "channel" => "cm.mobile",
-            "number" => "+237656016748", // Number to receive found
-            "phone" => "+237695782434", // Recipient phone number (contact only)
-            "email" => "hello@notchpay.cf",
+            "number" => "+237695782464", // Number to receive found
+            "phone" => "+237695782495", // Recipient phone number (contact only)
+            "email" => "hello@notchpay.qw",
             "country" => "CM",
             "description" => "Test description",
-            "reference" => "3RAV4gZLesBAXTrwiuUDLnJGSAS4RVqza"
+            "reference" => "3RAV4gZLesBAXTrwiuUDLnJGSDESSEWF"
         ]);
 
     $transfer = Transfer::direct([
-            "amount": "15",
+            "amount" => "15",
             "currency" => "XAF",
             "description" => "Test description",
-            "recipientId" => $beneficiary->recipient->id,
+            "recipient" => $beneficiary->recipient->id,
             "channel" => "cm.mobile",
             "beneficiary" => [
                     'name' => $beneficiary->recipient->name,
                     'number' => $beneficiary->recipient->phone
                 ]
         ]);
-        
+
 } catch(\NotchPay\Exceptions\ApiException $e){
     print_r($e->errors);
     die($e->getMessage());

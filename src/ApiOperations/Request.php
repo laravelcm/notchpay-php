@@ -72,6 +72,7 @@ trait Request
 
         if (NotchPay::$apiPrivateKey) {
             $headers['X-Grant'] = NotchPay::$apiPrivateKey;
+            $headers['X-Sync'] = NotchPay::$apiPrivateKey;
         }
 
         static::$client = new Client([

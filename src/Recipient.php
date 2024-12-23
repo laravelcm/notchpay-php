@@ -13,17 +13,13 @@ class Recipient extends ApiResource
     public static function create(array $params): array|object
     {
         self::validateParams($params, true);
-        $url = static::endPointUrl('initialize');
 
-        return static::staticRequest('POST', $url, $params);
+        return static::staticRequest('POST', "recipients", $params);
     }
 
-
-    public static function verify(string $reference): array|object
+    public static function list()
     {
-        $url = static::endPointUrl($reference);
-
-        return static::staticRequest('GET', $url);
+        return self::staticRequest('GET', "recipients");
     }
     
 }
