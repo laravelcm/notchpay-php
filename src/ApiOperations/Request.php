@@ -4,6 +4,7 @@ namespace NotchPay\ApiOperations;
 
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\ServerException;
 use NotchPay\Exceptions\ApiException;
 use NotchPay\Exceptions\InvalidArgumentException;
 use NotchPay\Exceptions\NotchPayException;
@@ -62,49 +63,75 @@ trait Request
      */
     protected static function setRequestOptions(): void
     {
-        static::$client = new Client(
-            [
-                'base_uri' => NotchPay::$apiBase,
-                'verify' => false,
-                'headers' => [
-                    'Authorization' => NotchPay::$apiKey,
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'User-Agent' => 'NotchPay/PHP Client'
-                ],
-            ]
-        );
+        $headers = [
+            'Authorization' => NotchPay::$apiKey,
+            'Content-Type'  => 'application/json',
+            'Accept'        => 'application/json',
+            'User-Agent'    => 'NotchPay/PHP Client',
+        ];
+
+        if (NotchPay::$apiPrivateKey) {
+            $headers['X-Grant'] = NotchPay::$apiPrivateKey;
+        }
+
+        static::$client = new Client([
+            'base_uri' => NotchPay::$apiBase,
+            'verify'   => false,
+            'headers'  => $headers,
+        ]);
     }
 
 
+    /**
+     * @throws ApiException
+     */
     private static function setHttpResponse(string $method, string $url, array $body = []): \GuzzleHttp\Psr7\Response
     {
         static::setRequestOptions();
 
+        $finalUrl = NotchPay::$apiBase . '/' . $url;
+
+        error_log('Final URL: ' . $finalUrl);
+        error_log('Request Body: ' . json_encode($body));
+
         try {
             static::$response = static::$client->{strtolower($method)}(
-                NotchPay::$apiBase . '/' . $url,
+                $finalUrl,
                 ['body' => json_encode($body)]
             );
-        } catch (ClientException | ServerExceptionn | ConnectException $e ) {
-            if($e instanceof ConnectException) {
+        } catch (ClientException | ServerException | ConnectException $e) {
+            if ($e instanceof ConnectException) {
                 throw new ApiException("Notch Pay Server unreachable");
             }
-            throw new ApiException(self::getResponseErrorMessage($e), self::getResponseErrors($e));
+
+            $errors = self::getResponseErrors($e);
+            error_log('Error Details: ' . print_r($errors, true));
+
+            throw new ApiException(
+                self::getResponseErrorMessage($e) ?? 'An unknown error occurred',
+                $errors
+            );
         }
 
         return static::$response;
     }
+
+
 
     private static function getResponseErrorMessage($e): string|null
     {
         return $e->getResponse()->getReasonPhrase();
     }
 
-    private static function getResponseErrors($e): array|null
+    private static function getResponseErrors($e): array
     {
-        return json_decode($e->getResponse()->getBody()->getContents(), true);
+        $body = $e->getResponse()->getBody()->getContents();
+        error_log('Response Body: ' . $body);
+
+        $decoded = json_decode($body, true);
+        return is_array($decoded) ? $decoded : [];
     }
+
 
 
     private static function getResponse(): array

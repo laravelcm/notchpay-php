@@ -2,36 +2,21 @@
 
 namespace NotchPay\Transfer;
 
+use NotchPay\ApiOperations\Request;
 use NotchPay\ApiResource;
-use NotchPay\Exceptions\InvalidArgumentException;
-use NotchPay\Transfer\Trait\Validation;
+use NotchPay\DTO\Transfers\RecipientDTO;
 
 class RecipientOperations extends ApiResource
 {
-    use Validation;
+    use Request;
 
-    private const REQUIRED_FIELDS = ['name', 'channel', 'number', 'phone', 'email', 'country', 'description', 'reference'];
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    public static function create(array $params): array|object
+    public static function create(RecipientDTO $recipientDTO): array|object
     {
-        self::validateRequiredParams($params, self::REQUIRED_FIELDS);
-        self::validateParams($params);
-
-        $url = static::endPointUrl("recipients");
-
-        return self::staticRequest('POST', $url, $params);
+        return self::staticRequest('POST', 'recipients', $recipientDTO->toArray());
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
-    public static function get(string $reference): array|object
+    public static function list()
     {
-        $url = static::endPointUrl("transfers/{$reference}");
-
-        return self::staticRequest('GET', $url);
+        return self::staticRequest('GET', "recipients");
     }
 }

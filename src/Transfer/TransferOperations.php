@@ -3,6 +3,7 @@
 namespace NotchPay\Transfer;
 
 use NotchPay\ApiResource;
+use NotchPay\DTO\Transfers\TransfersDTO;
 use NotchPay\Exceptions\InvalidArgumentException;
 use NotchPay\Transfer\Trait\Validation;
 
@@ -15,13 +16,9 @@ class TransferOperations extends ApiResource
     /**
      * @throws InvalidArgumentException
      */
-    public static function initialize(array $params): array|object
+    public static function initialize(TransfersDTO $transfersDTO): array|object
     {
-        self::validateRequiredParams($params, self::REQUIRED_FIELDS);
-        self::validateParams($params);
-
-        $url = static::endPointUrl('transfers');
-        return self::staticRequest('POST', $url, $params);
+        return self::staticRequest('POST', 'transfers', $transfersDTO->toArray());
     }
 
     /**
@@ -29,18 +26,14 @@ class TransferOperations extends ApiResource
      */
     public static function verify(string $reference): array|object
     {
-        $url = static::endPointUrl("transfers/{$reference}");
-
-        return self::staticRequest('GET', $url);
+        return self::staticRequest('GET', "transfers/{$reference}");
     }
 
     /**
      * @throws InvalidArgumentException
      */
-    public static function list(array $filters = []): array|object
+    public static function list(): array|object
     {
-        $url = static::endPointUrl('transfers');
-
-        return self::staticRequest('GET', $url, $filters);
+        return self::staticRequest('GET', 'transfers');
     }
 }

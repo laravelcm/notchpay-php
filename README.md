@@ -97,37 +97,211 @@ After we redirect to your callback, please verify the transaction before giving 
 ## Transfers
 
 ```php
+use NotchPay\DTO\Transfers\RecipientDTO;
+use NotchPay\DTO\Transfers\TransfersDTO;
 use NotchPay\NotchPay;
-use NotchPay\Payment;
 
-NotchPay::setApiKey('sk_1234abcd');
+NotchPay::setApiKey('pk_test.jMwMAHmIVTXn8X6v1G8972297813974');
+NotchPay::setApiPrivateKey('sk.jMwMAHmIVTXn8X6v1G897587');
 
-// Create a recipient
-$recipient = NotchPay::recipients()->create([
-      "channel" => "cm.mobile",
-      "number" => "+237656019261",
-      "phone" => "+237655632895",
-      "email" => "hello@notchpay.co",
-      "country" => "MX",
-      "name" => "Benjamin Maggio",
-      "description" => "Hic blanditiis voluptatem nobis ut saepe dolorem molestiae dolorum.",
-      "reference" => "3RAV4gZLesBAXTrwiuUDLnJGSAS4RVEbM5" // your unique reference
-]);
+try {
+    // Create an instance with a Object
+    $recipientData = new RecipientDTO(
+        name: "Benjamin Maggio",
+        channel: "cm.mobile",
+        number: "+2376xxxxxx", // Number to receive found (this is fake number)
+        phone: "+2376xxxxxx", // Recipient phone number (this is fake number)
+        email: "hellop@notchpay.ohi",
+        country: "CM",
+        description: "Test description",
+        reference: "3RAV4gZLesBAXTrwiuUDLnJGSAS4RVEbF5"
+    );
 
-// Initialize a transfer
-$transfer = NotchPay::transfers()->initialize([
-    'amount' => "10",
-    'currency' => 'XAF',
-    'description' => 'Salary payment',
-    'recipient' => $recipient->id
-]);
+       //Or you can Create an instance with a an Array directly
+//    $recipientData = RecipientDTO::fromArray([
+//            "name" => "Benjamin Maggio",
+//            "channel" => "cm.mobile",
+//            "number" => "+237656019255",
+//            "phone" => "+237655632823",
+//            "email" => "hello@notchpay.cio",
+//            "country" => "MX",
+//            "description" => "Test description",
+//            "reference" => "3RAV4gZLesBAXTrwiuUDLnJGSAS4RVEbG5"
+//        ]);
 
-// Verify a transfer
-$verified = NotchPay::transfers()->verify('transfer_reference');
+    $recipient = NotchPay::recipients()->create($recipientData);
+
+// sample of recipient response
+{
+   "code": 201,
+   "status": "Created",
+   "message": "Beneficiary created successfully",
+   "recipient": {
+       "id": "rcp.xxxxxxxxx",
+       "phone": "+2376xxxxxx",
+       "name": "Benjamin Maggio",
+       "email": "test@gmail.com",
+       "sandbox": false,
+       "country": "CM",
+       "payment_method": {
+           "channel": "cm.orange",
+           "id": "pm.xxxxxxxxxxx",
+           "email": null,
+           "country": "CM",
+           "name": null,
+           "type": "Mobile Money",
+           "account_number": null,
+           "number": "2376xxxxxx",
+           "phone": "+2376xxxxxx",
+           "issuer": "Orange Money",
+           "recipient": "rcp.xxxxxxxxx",
+           "issuer_code": null,
+           "created_at": "2024-12-23T09:39:45.000000Z"
+       }
+   }
+}
+
+// the list of your recipient
+$recipientList = NotchPay::recipients()->list();
+
+{
+   "code": 200,
+   "status": "OK",
+   "message": "Beneficiaries  retrieved",
+   "totals": 1,
+   "last_page": 1,
+   "current_page": 1,
+   "selected": 1,
+   "items": [
+            {
+                "id": "rcp.xxxxxxxx",
+                "phone": "+2376xxxxxx",
+                "name": "Benjamin Maggio",
+                "email": null,
+                "sandbox": false,
+                "country": "CM",
+                "payment_method": {
+                    "channel": "cm.orange",
+                    "id": "pm.xxxxxxxx",
+                    "email": null,
+                    "country": null,
+                    "name": null,
+                    "type": "Mobile Money",
+                    "account_number": null,
+                    "number": "2376xxxxxx",
+                    "phone": null,
+                    "issuer": "Orange Money",
+                    "recipient": "rcp.xxxxxxxx",
+                    "issuer_code": null,
+                    "created_at": "2024-12-23T09:39:46.000000Z"
+            }
+        }
+   ]
+}
+
+
+
+ // Initialize a transfer
+    $transferDTO = new TransfersDTO(
+       amount: "15",
+       currency: "XAF",
+       description: "Test description",
+       recipientId: $recipient->recipient->id,
+       channel: "cm.mobile",
+       beneficiary: [
+            'name' => $recipient->recipient->name,
+            'number' => $recipient->recipient->phone
+        ]
+    );
+    
+    $transfer = NotchPay::transfers()->initialize($transferDTO);
+
+// Sample of reponse of a transfers initialize
+{
+   "status": "Accepted",
+   "message": "Transfer initialized",
+   "code": 201,
+   "transfer": {
+       "amount": 15,
+       "amount_total": 16,
+       "sandbox": false,
+       "fee": 1,
+       "converted_amount": 15,
+       "beneficiary": "rcp.7jnXcrcX2KFTN9fi",
+       "description": "Test description", 
+       "reference": "po.xxxxxxxxxxxx", // here is your transfer referece. you can use it to verify a transfer
+       "trxref": null,
+       "statement": null,
+       "status": "sent",
+       "currency": "XAF",
+       "geo": "127.0.0.1",
+       "created_at": "2024-12-23T09:39:46.000000Z"
+   }
+}
+
+// verify a Transfer
+$verified = NotchPay::transfers()->verify("po.xxxxxxxxxxxx");
+
+{
+   "code": 200,
+   "status": "OK",
+   "message": "Transfer retrieved",
+   "transfer": {
+       "amount": 15,
+       "amount_total": 16,
+       "sandbox": false,
+       "fee": 1,
+       "converted_amount": 15,
+       "beneficiary": "rcp.xxxxxxxx",
+       "description": "Test description",
+       "reference": "po.xxxxxxxxxxxxx",
+       "trxref": null,
+       "statement": null,
+       "status": "sent",
+       "currency": "XAF",
+       "geo": "127.0.0.1",
+       "created_at": "2024-12-23T09:39:46.000000Z"
+   }
+}
 
 // List transfers
 $transfers = NotchPay::transfers()->list();
-```
+
+{
+   "code": 200,
+   "status": "OK",
+   "message": "Transfers retrieved",
+   "totals": 1,
+   "last_page": 1,
+   "current_page": 1,
+   "selected": 1,
+   "items": [
+       {
+           "amount": 15,
+           "amount_total": 16,
+           "sandbox": false,
+           "fee": 1,
+           "converted_amount": 15,
+           "beneficiary": "rcp.xxxxxxxx",
+           "description": "Test description",
+           "reference": "po.xxxxxxxxxxxx",
+           "trxref": null,
+           "statement": null,
+           "status": "sent",
+           "currency": "XAF",
+           "geo": "127.0.0.1",
+           "created_at": "2024-12-23T09:39:46.000000Z"
+       }
+   ]
+}
+    
+} catch(\NotchPay\Exceptions\ApiException $e){
+    print_r($e->getMessage());
+    die();
+} catch (\NotchPay\Exceptions\InvalidArgumentException $e) {
+    print_r($e->getMessage());
+    die();
+}
 
 ## Changelog
 

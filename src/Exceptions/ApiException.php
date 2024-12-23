@@ -4,7 +4,8 @@ namespace NotchPay\Exceptions;
 
 class ApiException extends NotchPayException
 {
-    public $errors;
+    public array $errors = [];
+
     public function __construct($message, array $errors = [])
     {
         parent::__construct($message);
