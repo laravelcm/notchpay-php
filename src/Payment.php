@@ -26,6 +26,7 @@ class Payment extends ApiResource
 
     /**
      * Init a charge for customer
+     * @throws InvalidArgumentException
      */
     public static function charge(string $reference, array $params): array|object
     {

@@ -24,7 +24,7 @@ trait Request
     protected static mixed $response;
 
 
-    public static function validateParams(mixed $params = null, bool $required = false): void
+    public static function validateParams(array $params = null, bool $required = false): void
     {
         if ($required) {
             if (empty($params) || !is_array($params)) {
@@ -72,7 +72,7 @@ trait Request
 
         if (NotchPay::$apiPrivateKey) {
             $headers['X-Grant'] = NotchPay::$apiPrivateKey;
-            $headers['X-Sync'] = NotchPay::$apiPrivateKey;
+//            $headers['X-Sync'] = NotchPay::$apiPrivateKey;
         }
 
         static::$client = new Client([

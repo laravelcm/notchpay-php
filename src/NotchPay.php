@@ -37,6 +37,7 @@ class NotchPay
     /**
      * Sets the API key to be used for requests.
      *
+     * @throws InvalidArgumentException
      */
     public static function setApiKey(string $apiKey): void
     {
